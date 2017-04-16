@@ -124,7 +124,11 @@
             var G = RGB.G10 + gVariation;
             var B = RGB.B10 + bVariation;
 
-            colors[i] = makeHexStringFromRGB(R, G, B);;
+            colors[i] = makeHexStringFromRGB(
+                ensureInHexRange(R),
+                ensureInHexRange(G),
+                ensureInHexRange(B)
+            );
         }
         return colors;
 
@@ -151,6 +155,12 @@
         //oh yeah, this is node. cool
         exports.analyzeColor = analyzeColor;
         exports.getSimilarColors = getSimilarColors;
+    }else{
+        //todo make this safer
+        thousand_color = {
+            analyzeColor: analyzeColor,
+            getSimilarColors: getSimilarColors
+        }
     }
 
 }());
