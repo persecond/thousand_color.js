@@ -72,8 +72,29 @@
     }
 
     /**
+     * Returns the provided number, limiting it to be between 0 and 255.
+     * 
+     * Numbers greater than 255 are returned as 255.
+     * Numbers less than 0 are returned as 0.
+     * All other numbers are returned as is.
+     * @param {number} number 
+     */
+    function ensureInHexRange(number){
+        if(number > 255){
+            return 255;
+        }else if(number < 0){
+            return 0;
+        }else{
+            return number;
+        }
+    }
+
+    /**
      * Produces similar colors from the given hex color.
+     * Colors are produced by randomly increasing/decreasing the R, G, and B values
+     * independently bound by a maximum variation.
      * @param {string} givenHexColor 
+     * @param {object} options
      */
     function getSimilarColors(givenHexColor, options){
 
@@ -95,24 +116,6 @@
             return Math.floor(Math.random() * (maxVariation - minVariation + 1)) + minVariation;
         }
 
-        /**
-         * Returns the provided number, limiting it to be between 0 and 255.
-         * 
-         * Numbers greater than 255 are returned as 255.
-         * Numbers less than 0 are returned as 0.
-         * All other numbers are returned as is.
-         * @param {number} number 
-         */
-        function ensureInHexRange(number){
-            if(number > 255){
-                return 255;
-            }else if(number < 0){
-                return 0;
-            }else{
-                return number;
-            }
-        }
-
         var colors = [];
         for(var i = 0; i < MAX_COLORS; i++){
 
@@ -130,6 +133,54 @@
                 ensureInHexRange(B)
             );
         }
+        return colors;
+
+    }
+
+    /**
+     * Produces colors proportional to the given hex color.
+     * Colors are produced by increasing/decreasing the R, G, and B values
+     * by a randomly generated percentage. All R, G and B values for each proportional
+     * color use the same percent difference.
+     * @param {string} givenHexColor 
+     * @param {object} options
+     */
+    function getProportionalColors(givenHexColor, options){
+
+        var maxColors, maxPercent;
+        if(typeof options === 'object'){
+            maxColors = options.maxColors;
+            maxPercent = options.maxPercent;
+        }
+
+        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
+        const PERCENT = typeof maxPercent === 'number' ? maxPercent : 10;
+
+        const interpretedHex = ensureSixHexDigits(givenHexColor);
+        const RGB = getRGBDecimal(interpretedHex);
+
+        const max = Math.floor((PERCENT / 2));
+        const min = -1 * max;
+        function getRandomPercent() {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        var colors = [];
+        for(var i = 0; i < MAX_COLORS; i++){
+
+            var percent = getRandomPercent() / 100;
+
+            var R = RGB.R10 + Math.floor(RGB.R10 * percent);
+            var G = RGB.G10 + Math.floor(RGB.G10 * percent);
+            var B = RGB.B10 + Math.floor(RGB.B10 * percent);
+
+            colors[i] = makeHexStringFromRGB(
+                ensureInHexRange(R),
+                ensureInHexRange(G),
+                ensureInHexRange(B)
+            );
+        }
+
         return colors;
 
     }
@@ -155,11 +206,13 @@
         //oh yeah, this is node. cool
         exports.analyzeColor = analyzeColor;
         exports.getSimilarColors = getSimilarColors;
+        exports.getProportionalColors = getProportionalColors;
     }else{
         //todo make this safer
         thousand_color = {
             analyzeColor: analyzeColor,
-            getSimilarColors: getSimilarColors
+            getSimilarColors: getSimilarColors,
+            getProportionalColors: getProportionalColors
         }
     }
 
