@@ -1,0 +1,15 @@
+{
+  "name": "thousand-color",
+  "version": "1.0.0",
+  "description": "for steve to do color stuff",
+  "main": "thousand-color.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha test"
+  },
+  "author": "persecond",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*"
+  }
+}
