@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body{
+                margin: 0px;
+                line-height: 0px;
+            }
+            .color{
+                height: 200px;
+                width: 200px;
+                /*border: 1px solid black;*/
+                display: inline-block;
+            }
+        </style>
+        <script src="../thousand-color.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) { 
+
+                const color = "#FFD750";
+
+                function setColorsInUI(){
+
+                    var analysis = thousand_color.analyzeColor(color);
+                    var similarColors = thousand_color.getSimilarColors(color, {maxColors: 12, variation: 30});
+                    var similarComplements = thousand_color.getSimilarColors(analysis.complement.hex, {maxColors: 12, variation: 30});
+                    // var similarColors = thousand_color.getProportionalColors(color, {maxColors: 24, maxPercent: 50});
+
+                    var html = "";
+                    for(var i in similarColors){
+                        var similarColor = similarColors[i];
+                        html += "<div class='color' style='background-color:" + similarColor.getHex() + "'></div>";
+                    }
+                    document.getElementsByClassName("colors")[0].innerHTML = html;
+
+                    html = "";
+                    for(var i in similarComplements){
+                        var similarColor = similarComplements[i];
+                        html += "<div class='color' style='background-color:" + similarColor.getHex() + "'></div>";
+                    }
+                    document.getElementsByClassName("complement-colors")[0].innerHTML = html;
+
+                    setTimeout(setColorsInUI, 100);
+
+                }
+
+                setColorsInUI();
+
+            });
+        </script>
+    </head>
+    <body>
+        <div class="colors"></div>
+        <div class="complement-colors"></div>
+    </body>
+</html>

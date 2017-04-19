@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .color{
+                height: 200px;
+                width: 200px;
+                display: inline-block;
+            }
+        </style>
+        <script src="../thousand-color.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) { 
+
+                const color = "#FFD750";
+                var analysis = thousand_color.analyzeColor(color);
+
+                document.getElementsByClassName("the-color")[0].style.backgroundColor = analysis.color.hex;
+                document.getElementsByClassName("complement")[0].style.backgroundColor = analysis.complement.hex;
+                document.getElementsByClassName("debug")[0].innerHTML = JSON.stringify(analysis, null, 4);
+
+            });
+        </script>
+    </head>
+    <body>
+        color:
+        <div class="the-color color"></div>
+        complement:
+        <div class="complement color"></div>
+        <div class="debug"></div>
+        <div class="colors"></div>
+    </body>
+</html>
