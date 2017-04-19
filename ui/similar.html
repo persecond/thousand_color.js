@@ -9,7 +9,6 @@
             .color{
                 height: 200px;
                 width: 200px;
-                /*border: 1px solid black;*/
                 display: inline-block;
             }
         </style>
@@ -17,14 +16,14 @@
         <script>
             document.addEventListener("DOMContentLoaded", function(event) { 
 
-                const color = "#FFD750";
+                const hexColor = "#FF6BE9";
 
                 function setColorsInUI(){
 
-                    var analysis = thousand_color.analyzeColor(color);
-                    var similarColors = thousand_color.getSimilarColors(color, {maxColors: 12, variation: 30});
-                    var similarComplements = thousand_color.getSimilarColors(analysis.complement.hex, {maxColors: 12, variation: 30});
-                    // var similarColors = thousand_color.getProportionalColors(color, {maxColors: 24, maxPercent: 50});
+                    var color = thousand_color.getColor(hexColor);
+                    var similarColors = color.makeSimilar({maxColors: 12, variation: 30});
+                    var similarComplements = color.makeComplement().makeSimilar({maxColors: 12, variation: 30});
+                    // var similarColors = color.makeProportional({maxColors: 24, maxPercent: 50});
 
                     var html = "";
                     for(var i in similarColors){

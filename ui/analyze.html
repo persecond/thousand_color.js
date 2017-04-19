@@ -12,12 +12,21 @@
         <script>
             document.addEventListener("DOMContentLoaded", function(event) { 
 
-                const color = "#FFD750";
-                var analysis = thousand_color.analyzeColor(color);
+                const hexColor = "#FF6BE9";
 
-                document.getElementsByClassName("the-color")[0].style.backgroundColor = analysis.color.hex;
-                document.getElementsByClassName("complement")[0].style.backgroundColor = analysis.complement.hex;
-                document.getElementsByClassName("debug")[0].innerHTML = JSON.stringify(analysis, null, 4);
+                var color = thousand_color.getColor(hexColor);
+
+                var complement = color.makeComplement();
+                var analagous = color.makeAnalagous();
+                var triads = color.makeTriads();
+
+                document.getElementsByClassName("the-color")[0].style.backgroundColor = color.hex;
+                document.getElementsByClassName("complement")[0].style.backgroundColor = complement.hex;
+                document.getElementsByClassName("analog1")[0].style.backgroundColor = analagous[0].hex;
+                document.getElementsByClassName("analog2")[0].style.backgroundColor = analagous[1].hex;
+                document.getElementsByClassName("triad1")[0].style.backgroundColor = triads[0].hex;
+                document.getElementsByClassName("triad2")[0].style.backgroundColor = triads[1].hex;
+                document.getElementsByClassName("debug")[0].innerHTML = JSON.stringify(color, null, 4);
 
             });
         </script>
@@ -25,8 +34,16 @@
     <body>
         color:
         <div class="the-color color"></div>
+        <br/>
         complement:
         <div class="complement color"></div>
+        <br/>
+        analagous
+        <div class="analog1 color"></div>
+        <div class="analog2 color"></div>
+        triad
+        <div class="triad1 color"></div>
+        <div class="triad2 color"></div>
         <div class="debug"></div>
         <div class="colors"></div>
     </body>

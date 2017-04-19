@@ -131,37 +131,7 @@
         return this.V;
     }
 
-    var Color = function(hexColor){
-        var sanitized = ensureSixHexDigits(hexColor);
-        this.hex = makeHexString(sanitized);
-        this.rgb = new RGB(sanitized);
-        this.cmyk = new CMYK(this.rgb);
-        this.hsv = new HSV(this.rgb);
-    }
-    Color.prototype.getHex = function(){
-        return this.hex;
-    }
-    Color.prototype.getRGB = function(){
-        return this.rgb;
-    }
-    Color.prototype.getCMYK = function(){
-        return this.cmyk;
-    }
-    Color.prototype.getHSV = function(){
-        return this.hsv;
-    }
-    Color.prototype.complement = function(){
-        var hsv = this.getHSV();
-        var h = hsv.getH();
-        var s = hsv.getS();
-        var v = hsv.getV();
-
-        //inverse hue
-        h += .5;
-        if(h > 1){
-            h -= 1;
-        }
-
+    function getColorFromHSV(h, s, v){
         var r, g, b, i, f, p, q, t;
         if (arguments.length === 1) {
             s = h.s, v = h.v, h = h.h;
@@ -185,6 +155,175 @@
         return new Color(complementHex);
     }
 
+    var Color = function(hexColor){
+        var sanitized = ensureSixHexDigits(hexColor);
+        this.hex = makeHexString(sanitized);
+        this.rgb = new RGB(sanitized);
+        this.cmyk = new CMYK(this.rgb);
+        this.hsv = new HSV(this.rgb);
+    }
+    Color.prototype.getHex = function(){
+        return this.hex;
+    }
+    Color.prototype.getRGB = function(){
+        return this.rgb;
+    }
+    Color.prototype.getCMYK = function(){
+        return this.cmyk;
+    }
+    Color.prototype.getHSV = function(){
+        return this.hsv;
+    }
+    Color.prototype.makeComplement = function(){
+        var hsv = this.getHSV();
+        var h = hsv.getH();
+        var s = hsv.getS();
+        var v = hsv.getV();
+
+        //inverse hue
+        h += .5;
+        if(h > 1){
+            h--;
+        }
+
+        return getColorFromHSV(h, s, v);
+    }
+    Color.prototype.makeAnalagous = function(variation){
+        var hsv = this.getHSV();
+        var h = hsv.getH();
+        var s = hsv.getS();
+        var v = hsv.getV();
+
+        if(typeof varation === "undefined"){
+            variation = 1/50;
+        }else if(variation > 1 || variation < 0){
+            throw "Variation must be a positive number between 0 and 1";
+        }
+
+        var h1 = h + variation;
+        var h2 = h - variation;
+
+        function correctHue(h){
+            if(h > 1)h--;
+            else if(h < 1)h++;
+        }
+
+        correctHue(h1);
+        correctHue(h2);
+
+        return [
+            getColorFromHSV(h1, s, v),
+            getColorFromHSV(h2, s, v)
+        ];
+    }
+    Color.prototype.makeTriads = function(){
+        var hsv = this.getHSV();
+        var h = hsv.getH();
+        var s = hsv.getS();
+        var v = hsv.getV();
+
+        var h1 = h + (1/3);
+        var h2 = h + (2/3);
+
+        if(h1 > 1) h1--;
+        if(h2 > 1) h2--;
+
+        return [
+            getColorFromHSV(h1, s, v),
+            getColorFromHSV(h2, s, v)
+        ];
+    }
+    /**
+     * Produces similar colors.
+     * Colors are produced by randomly increasing/decreasing the R, G, and B values
+     * independently bound by a maximum variation.
+     * @param {object} options
+     */
+    Color.prototype.makeSimilar = function(options){
+
+        var maxColors, variation;
+        if(typeof options === 'object'){
+            maxColors = options.maxColors;
+            variation = options.variation;
+        }
+
+        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
+        const VARIATION = typeof variation === 'number' ? variation : 5;
+
+        const rgb = this.getRGB();
+
+        const maxVariation = Math.floor((VARIATION / 2));
+        const minVariation = -1 * maxVariation;
+        function getRandomVariation() {
+            return Math.floor(Math.random() * (maxVariation - minVariation + 1)) + minVariation;
+        }
+
+        var colors = [];
+        for(var i = 0; i < MAX_COLORS; i++){
+
+            var rVariation = getRandomVariation();
+            var gVariation = getRandomVariation();
+            var bVariation = getRandomVariation();
+
+            var R = rgb.getR10() + rVariation;
+            var G = rgb.getG10() + gVariation;
+            var B = rgb.getB10() + bVariation;
+
+            colors[i] = new Color(makeHexStringFromRGB(
+                ensureInHexRange(R),
+                ensureInHexRange(G),
+                ensureInHexRange(B)
+            ));
+        }
+        return colors;
+
+    }
+    /**
+     * Produces proportional colors.
+     * Colors are produced by increasing/decreasing the R, G, and B values
+     * by a randomly generated percentage. All R, G and B values for each proportional
+     * color use the same percent difference.
+     * @param {object} options
+     */
+    Color.prototype.makeProportional = function(options){
+
+        var maxColors, maxPercent;
+        if(typeof options === 'object'){
+            maxColors = options.maxColors;
+            maxPercent = options.maxPercent;
+        }
+
+        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
+        const PERCENT = typeof maxPercent === 'number' ? maxPercent : 10;
+
+        const rgb = this.getRGB();
+
+        const max = Math.floor((PERCENT / 2));
+        const min = -1 * max;
+        function getRandomPercent() {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        var colors = [];
+        for(var i = 0; i < MAX_COLORS; i++){
+
+            var percent = getRandomPercent() / 100;
+
+            var R = rgb.getR10() + Math.floor(rgb.getR10() * percent);
+            var G = rgb.getG10() + Math.floor(rgb.getG10() * percent);
+            var B = rgb.getB10() + Math.floor(rgb.getB10() * percent);
+
+            colors[i] = new Color(makeHexStringFromRGB(
+                ensureInHexRange(R),
+                ensureInHexRange(G),
+                ensureInHexRange(B)
+            ));
+        }
+
+        return colors;
+
+    }
+
     /**
      * Removes any leading "#" or white space from a hex color string.
      * @param {string} hexColor 
@@ -198,7 +337,7 @@
      * @param {string} hexColor 
      */
     function makeHexString(hexColor){
-        var hex = hexColor.trim();
+        var hex = hexColor.trim().toUpperCase();
         if(hex.indexOf("#") >= 0){
             return hex;
         }else{
@@ -267,114 +406,6 @@
         }
     }
 
-    /**
-     * Produces similar colors from the given hex color.
-     * Colors are produced by randomly increasing/decreasing the R, G, and B values
-     * independently bound by a maximum variation.
-     * @param {string} givenHexColor 
-     * @param {object} options
-     */
-    function getSimilarColors(givenHexColor, options){
-
-        var maxColors, variation;
-        if(typeof options === 'object'){
-            maxColors = options.maxColors;
-            variation = options.variation;
-        }
-
-        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
-        const VARIATION = typeof variation === 'number' ? variation : 5;
-
-        const interpretedHex = ensureSixHexDigits(givenHexColor);
-        const rgb = new RGB(interpretedHex);
-
-        const maxVariation = Math.floor((VARIATION / 2));
-        const minVariation = -1 * maxVariation;
-        function getRandomVariation() {
-            return Math.floor(Math.random() * (maxVariation - minVariation + 1)) + minVariation;
-        }
-
-        var colors = [];
-        for(var i = 0; i < MAX_COLORS; i++){
-
-            var rVariation = getRandomVariation();
-            var gVariation = getRandomVariation();
-            var bVariation = getRandomVariation();
-
-            var R = rgb.getR10() + rVariation;
-            var G = rgb.getG10() + gVariation;
-            var B = rgb.getB10() + bVariation;
-
-            colors[i] = new Color(makeHexStringFromRGB(
-                ensureInHexRange(R),
-                ensureInHexRange(G),
-                ensureInHexRange(B)
-            ));
-        }
-        return colors;
-
-    }
-
-    /**
-     * Produces colors proportional to the given hex color.
-     * Colors are produced by increasing/decreasing the R, G, and B values
-     * by a randomly generated percentage. All R, G and B values for each proportional
-     * color use the same percent difference.
-     * @param {string} givenHexColor 
-     * @param {object} options
-     */
-    function getProportionalColors(givenHexColor, options){
-
-        var maxColors, maxPercent;
-        if(typeof options === 'object'){
-            maxColors = options.maxColors;
-            maxPercent = options.maxPercent;
-        }
-
-        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
-        const PERCENT = typeof maxPercent === 'number' ? maxPercent : 10;
-
-        const interpretedHex = ensureSixHexDigits(givenHexColor);
-        const rgb = new RGB(interpretedHex);
-
-        const max = Math.floor((PERCENT / 2));
-        const min = -1 * max;
-        function getRandomPercent() {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        var colors = [];
-        for(var i = 0; i < MAX_COLORS; i++){
-
-            var percent = getRandomPercent() / 100;
-
-            var R = rgb.getR10() + Math.floor(rgb.getR10() * percent);
-            var G = rgb.getG10() + Math.floor(rgb.getG10() * percent);
-            var B = rgb.getB10() + Math.floor(rgb.getB10() * percent);
-
-            colors[i] = new Color(makeHexStringFromRGB(
-                ensureInHexRange(R),
-                ensureInHexRange(G),
-                ensureInHexRange(B)
-            ));
-        }
-
-        return colors;
-
-    }
-
-    /**
-     * Takes a starting hex color and returns analytical information.
-     * @param {string} givenHexColor 
-     */
-    function analyzeColor(givenHexColor){
-        var color = new Color(givenHexColor);
-        return {
-            color: color,
-            complement: color.complement()
-        }
-    }
-
     function getColor(givenHexColor){
         return new Color(givenHexColor);
     }
@@ -383,16 +414,10 @@
     if(typeof exports === 'object'){
         //oh yeah, this is node. cool
         exports.getColor = getColor;
-        exports.analyzeColor = analyzeColor;
-        exports.getSimilarColors = getSimilarColors;
-        exports.getProportionalColors = getProportionalColors;
     }else{
         //todo make this safer
         thousand_color = {
-            getColor: getColor,
-            analyzeColor: analyzeColor,
-            getSimilarColors: getSimilarColors,
-            getProportionalColors: getProportionalColors
+            getColor: getColor
         }
     }
 
