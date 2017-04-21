@@ -1,6 +1,6 @@
 /**
  * "There are not more than five primary colors, 
- * yet in combination they produce more hues than can ever been seen."
+ * yet in combination they produce more hues than can ever be seen."
  *                                                          - Sun Tzu
  */
 (function(){
