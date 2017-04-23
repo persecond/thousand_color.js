@@ -2,7 +2,7 @@
  * @preserve Copyright 2017 Steve Conrad
  * "There are not more than five primary colors, 
  * yet in combination they produce more hues than can ever be seen."
- *                                                         - Sun Tzu
+ *                                                          - Sun Tzu
  */
 (function(exports){
 
@@ -413,4 +413,8 @@
 
     exports.getColor = getColor;
 
+<<<<<<< HEAD
 }(typeof exports === 'undefined' ? this['thousand_color']={} : exports));
+=======
+}());
+>>>>>>> ca7e58ed980bf5a7eee354bda16595353ccfe097
