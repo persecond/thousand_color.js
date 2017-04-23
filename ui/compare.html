@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .contrast{
+                height: 400px;
+                width: 400px;
+                display: inline-block;
+            }
+            .color{
+                height: 50px;
+                width: 50px;
+                display: block;
+                top: 150px;
+                left: 150px;
+                position: relative;
+            }
+        </style>
+        <script src="../thousand-color.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) { 
+                const hexColor = "#3a0232";
+
+                var color = thousand_color.getColor(hexColor);
+                var contrast = color.makeComplement();
+
+                document.getElementsByClassName("color")[0].style.backgroundColor = color.hex;
+                document.getElementsByClassName("contrast")[0].style.backgroundColor = contrast.hex;
+            });
+        </script>
+    </head>
+    <body>
+        <div class="contrast">
+            <div class="color"></div>
+        </div>
+    </body>
+</html>

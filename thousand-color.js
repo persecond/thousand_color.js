@@ -413,8 +413,4 @@
 
     exports.getColor = getColor;
 
-<<<<<<< HEAD
 }(typeof exports === 'undefined' ? this['thousand_color']={} : exports));
-=======
-}());
->>>>>>> ca7e58ed980bf5a7eee354bda16595353ccfe097
