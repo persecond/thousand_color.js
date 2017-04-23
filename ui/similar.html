@@ -12,18 +12,19 @@
                 display: inline-block;
             }
         </style>
-        <script src="../thousand-color.js"></script>
+        <script src="../thousand-color.min.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) { 
 
-                const hexColor = "#FF6BE9";
+                const hexColor = "#FF8800";
 
                 function setColorsInUI(){
 
                     var color = thousand_color.getColor(hexColor);
                     var similarColors = color.makeSimilar({maxColors: 12, variation: 30});
+                    // var similarColors = color.makeProportional({maxColors: 12, maxPercent: 50});
                     var similarComplements = color.makeComplement().makeSimilar({maxColors: 12, variation: 30});
-                    // var similarColors = color.makeProportional({maxColors: 24, maxPercent: 50});
+                    // var similarComplements = color.makeComplement().makeProportional({maxColors: 12, variation: 50});
 
                     var html = "";
                     for(var i in similarColors){

@@ -1,11 +1,12 @@
 /**
+ * @preserve Copyright 2017 Steve Conrad
  * "There are not more than five primary colors, 
- * yet in combination they produce more hues than can ever been seen."
- *                                                          - Sun Tzu
+ * yet in combination they produce more hues than can ever be seen."
+ *                                                         - Sun Tzu
  */
-(function(){
+(function(exports){
 
-    // "use strict";
+    "use strict";
 
     /**
      * RGB object
@@ -410,15 +411,6 @@
         return new Color(givenHexColor);
     }
 
-    //is this node?
-    if(typeof exports === 'object'){
-        //oh yeah, this is node. cool
-        exports.getColor = getColor;
-    }else{
-        //todo make this safer
-        thousand_color = {
-            getColor: getColor
-        }
-    }
+    exports.getColor = getColor;
 
-}());
+}(typeof exports === 'undefined' ? this['thousand_color']={} : exports));

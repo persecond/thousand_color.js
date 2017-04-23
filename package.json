@@ -4,12 +4,14 @@
   "description": "for steve to do color stuff",
   "main": "thousand-color.js",
   "scripts": {
-    "test": "node_modules/.bin/mocha test"
+    "test": "node_modules/.bin/mocha test",
+    "minify": "node_modules/.bin/uglifyjs thousand-color.js -c -m --comments -o thousand-color.min.js"
   },
   "author": "persecond",
   "license": "UNLICENSED",
   "devDependencies": {
     "mocha": "*",
-    "chai": "*"
+    "chai": "*",
+    "uglify-js": "*"
   }
 }
