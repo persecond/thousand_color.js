@@ -1,14 +1,15 @@
 {
   "name": "thousand-color",
   "version": "1.0.0",
-  "description": "for steve to do color stuff",
+  "description": "library for retrieving information about colors and generating corresponding colors",
   "main": "thousand-color.js",
   "scripts": {
     "test": "node_modules/.bin/mocha test",
     "minify": "node_modules/.bin/uglifyjs thousand-color.js -c -m --comments -o thousand-color.min.js"
   },
-  "author": "persecond",
-  "license": "UNLICENSED",
+  "author": "steve-thousand",
+  "homepage": "https://github.com/steve-thousand/thousand_color.js"
+  "license": "MIT",
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
