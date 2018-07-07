@@ -8,7 +8,7 @@
     "minify": "node_modules/.bin/uglifyjs thousand-color.js -c -m --comments -o thousand-color.min.js"
   },
   "author": "steve-thousand",
-  "homepage": "https://github.com/steve-thousand/thousand_color.js"
+  "homepage": "https://github.com/steve-thousand/thousand_color.js",
   "license": "MIT",
   "devDependencies": {
     "mocha": "*",
