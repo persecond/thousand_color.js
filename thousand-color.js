@@ -1,5 +1,5 @@
 /**
- * @preserve Copyright 2017 Steve Conrad
+ * @preserve Copyright 2018 Stephen Tyler Conrad
  * "There are not more than five primary colors, 
  * yet in combination they produce more hues than can ever be seen."
  *                                                          - Sun Tzu
@@ -248,13 +248,13 @@
             variation = options.variation;
         }
 
-        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
-        const VARIATION = typeof variation === 'number' ? variation : 5;
+        var MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
+        var VARIATION = typeof variation === 'number' ? variation : 5;
 
-        const rgb = this.getRGB();
+        var rgb = this.getRGB();
 
-        const maxVariation = Math.floor((VARIATION / 2));
-        const minVariation = -1 * maxVariation;
+        var maxVariation = Math.floor((VARIATION / 2));
+        var minVariation = -1 * maxVariation;
         function getRandomVariation() {
             return Math.floor(Math.random() * (maxVariation - minVariation + 1)) + minVariation;
         }
@@ -294,13 +294,13 @@
             maxPercent = options.maxPercent;
         }
 
-        const MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
-        const PERCENT = typeof maxPercent === 'number' ? maxPercent : 10;
+        var MAX_COLORS = typeof maxColors === 'number' ? maxColors : 5;
+        var PERCENT = typeof maxPercent === 'number' ? maxPercent : 10;
 
-        const rgb = this.getRGB();
+        var rgb = this.getRGB();
 
-        const max = Math.floor((PERCENT / 2));
-        const min = -1 * max;
+        var max = Math.floor((PERCENT / 2));
+        var min = -1 * max;
         function getRandomPercent() {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }

@@ -1,5 +1,5 @@
 const expect = require("chai").expect;
-const thousandColor = require("../thousand-color");
+const thousandColor = require("../thousand-color.min");
 
 describe("test color", function(){
     it('should return given color', function(done){
